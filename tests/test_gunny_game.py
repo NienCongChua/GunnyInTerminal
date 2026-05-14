@@ -1,5 +1,4 @@
 import unittest
-import math
 
 from gunny_game import GRAVITY, Tank, apply_shot, compute_damage, compute_landing_distance
 
@@ -21,10 +20,7 @@ class GunnyGameTests(unittest.TestCase):
     def test_apply_shot_reduces_hp_when_hit(self):
         shooter = Tank("A", 2)
         target = Tank("B", 38)
-        angle = 45
-        distance = abs(target.x - shooter.x)
-        power_for_direct_hit = math.sqrt((distance * GRAVITY) / math.sin(2 * math.radians(angle)))
-        damage, _ = apply_shot(shooter, target, angle=angle, power=power_for_direct_hit, wind=0)
+        damage, _ = apply_shot(shooter, target, angle=45, power=18.8, wind=0)
 
         self.assertGreater(damage, 0)
         self.assertEqual(target.hp, 100 - damage)

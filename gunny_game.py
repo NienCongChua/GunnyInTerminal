@@ -9,7 +9,6 @@ import random
 MAX_HP = 100
 FIELD_WIDTH = 41
 GRAVITY = 9.8
-MIN_SIN_COMPONENT = 0.1
 
 
 class Tank:
@@ -72,7 +71,8 @@ def render_field(player: Tank, enemy: Tank, impact_x: float | None = None) -> st
 
 def apply_shot(shooter: Tank, target: Tank, angle: float, power: float, wind: float) -> tuple[int, float]:
     landing = compute_landing_distance(angle, power, wind)
-    impact_x = shooter.x + landing if shooter.x < target.x else shooter.x - landing
+    direction = 1 if target.x >= shooter.x else -1
+    impact_x = shooter.x + direction * landing
     distance_error = abs(impact_x - target.x)
     damage = compute_damage(distance_error)
     target.hp = max(0, target.hp - damage)
@@ -84,7 +84,7 @@ def enemy_ai_shot(player: Tank, enemy: Tank, wind: float) -> tuple[float, float]
     distance = abs(player.x - enemy.x)
     preferred_angle = random.uniform(30, 55)
     angle_rad = math.radians(preferred_angle)
-    sin_component = max(math.sin(2 * angle_rad), MIN_SIN_COMPONENT)
+    sin_component = math.sin(2 * angle_rad)
     required_range = distance - wind
     if required_range <= 0:
         return preferred_angle, 10
