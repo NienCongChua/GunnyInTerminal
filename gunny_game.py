@@ -84,7 +84,11 @@ def enemy_ai_shot(player: Tank, enemy: Tank, wind: float) -> tuple[float, float]
     distance = abs(player.x - enemy.x)
     preferred_angle = random.uniform(30, 55)
     angle_rad = math.radians(preferred_angle)
-    estimated_power = math.sqrt(max(1.0, ((distance - wind) * GRAVITY) / max(math.sin(2 * angle_rad), 0.1)))
+    sin_component = max(math.sin(2 * angle_rad), 0.1)
+    required_range = distance - wind
+    if required_range <= 0:
+        return preferred_angle, 10
+    estimated_power = math.sqrt((required_range * GRAVITY) / sin_component)
     power = clamp(estimated_power + random.uniform(-2.0, 2.0), 10, 35)
     return preferred_angle, power
 
