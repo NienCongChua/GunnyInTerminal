@@ -24,7 +24,7 @@ class GunnyGameTests(unittest.TestCase):
         angle = 45
         distance = abs(target.x - shooter.x)
         power_for_direct_hit = math.sqrt((distance * GRAVITY) / math.sin(2 * math.radians(angle)))
-        damage, _ = apply_shot(shooter, target, angle=45, power=power_for_direct_hit, wind=0)
+        damage, _ = apply_shot(shooter, target, angle=angle, power=power_for_direct_hit, wind=0)
 
         self.assertGreater(damage, 0)
         self.assertEqual(target.hp, 100 - damage)
