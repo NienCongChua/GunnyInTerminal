@@ -1,7 +1,7 @@
 import unittest
 import math
 
-from gunny_game import Tank, apply_shot, compute_damage, compute_landing_distance
+from gunny_game import GRAVITY, Tank, apply_shot, compute_damage, compute_landing_distance
 
 
 class GunnyGameTests(unittest.TestCase):
@@ -15,13 +15,15 @@ class GunnyGameTests(unittest.TestCase):
         self.assertGreaterEqual(compute_landing_distance(45, 20, -100), 0)
 
     def test_compute_landing_distance_known_value(self):
-        expected = (20 * 20) / 9.8
+        expected = (20 * 20) / GRAVITY
         self.assertAlmostEqual(compute_landing_distance(45, 20, 0), expected, places=5)
 
     def test_apply_shot_reduces_hp_when_hit(self):
         shooter = Tank("A", 2)
         target = Tank("B", 38)
-        power_for_direct_hit = math.sqrt((abs(target.x - shooter.x) * 9.8))
+        angle = 45
+        distance = abs(target.x - shooter.x)
+        power_for_direct_hit = math.sqrt((distance * GRAVITY) / math.sin(2 * math.radians(angle)))
         damage, _ = apply_shot(shooter, target, angle=45, power=power_for_direct_hit, wind=0)
 
         self.assertGreater(damage, 0)
