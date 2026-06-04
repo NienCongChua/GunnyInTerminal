@@ -1,41 +1,44 @@
-#include <windows.h>
-#include <iostream>
-#include <conio.h>
+#include "ConsoleEngine.h"
+
+#include <string>
 
 int main() {
-    std::cout << "Input Test - Press keys to test input detection\n";
-    std::cout << "Press ESC to exit\n\n";
-    
-    while (true) {
-        // Test GetAsyncKeyState
-        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-            std::cout << "ESC pressed - exiting\n";
-            break;
-        }
-        
-        if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
-            std::cout << "ENTER pressed\n";
-            Sleep(200); // Prevent spam
-        }
-        
-        if (GetAsyncKeyState(VK_UP) & 0x8000) {
-            std::cout << "UP arrow pressed\n";
-            Sleep(200);
-        }
-        
-        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-            std::cout << "DOWN arrow pressed\n";
-            Sleep(200);
-        }
-        
-        // Test _kbhit and _getch
-        if (_kbhit()) {
-            char ch = _getch();
-            std::cout << "Key pressed: " << static_cast<int>(ch) << " ('" << ch << "')\n";
-        }
-        
-        Sleep(50); // Small delay to prevent high CPU usage
+    ConsoleEngine console(60, 12);
+    if (!console.Initialize()) {
+        return 1;
     }
-    
+
+    std::string lastEvent = "Waiting for input...";
+    bool running = true;
+
+    while (running) {
+        console.LimitFPS(30);
+        console.PollInput();
+
+        if (console.IsKeyPressed(VK_ESCAPE)) {
+            lastEvent = "ESC pressed - exiting";
+            running = false;
+        } else if (console.IsKeyPressed(VK_RETURN)) {
+            lastEvent = "ENTER pressed";
+        } else if (console.IsKeyPressed(VK_UP)) {
+            lastEvent = "UP arrow pressed";
+        } else if (console.IsKeyPressed(VK_DOWN)) {
+            lastEvent = "DOWN arrow pressed";
+        } else if (console.IsKeyPressed(VK_LEFT)) {
+            lastEvent = "LEFT arrow pressed";
+        } else if (console.IsKeyPressed(VK_RIGHT)) {
+            lastEvent = "RIGHT arrow pressed";
+        } else if (console.IsKeyPressed(VK_SPACE)) {
+            lastEvent = "SPACE pressed";
+        }
+
+        console.ClearScreen();
+        console.DrawString(2, 2, "Input Test", Color::YELLOW);
+        console.DrawString(2, 4, "Press arrows, Enter, Space, or Esc.", Color::WHITE);
+        console.DrawString(2, 6, lastEvent, running ? Color::CYAN : Color::GREEN);
+        console.Present();
+    }
+
+    console.Cleanup();
     return 0;
 }

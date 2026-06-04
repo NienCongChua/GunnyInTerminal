@@ -4,7 +4,14 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2
 LDFLAGS =
 
+ifeq ($(OS),Windows_NT)
 TARGET = gunny.exe
+CLEAN_CMD = cmd /C "del /Q $(OBJECTS) $(TARGET) 2>NUL"
+else
+TARGET = gunny
+CLEAN_CMD = rm -f $(OBJECTS) $(TARGET)
+endif
+
 SOURCES = main.cpp ConsoleEngine.cpp Terrain.cpp GameEngine.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 HEADERS = GameStructures.h ConsoleEngine.h Terrain.h GameEngine.h
@@ -19,7 +26,7 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	del /Q *.o $(TARGET) 2>nul || true
+	-$(CLEAN_CMD)
 
 rebuild: clean all
 

@@ -6,8 +6,10 @@
 
 class ConsoleEngine {
 private:
+#ifdef _WIN32
     HANDLE hConsole;
     HANDLE hInput;
+#endif
     COORD screenSize;
     CHAR_INFO* screenBuffer;
     CHAR_INFO* prevScreenBuffer;  // For dirty checking
@@ -33,6 +35,7 @@ public:
     void Present();
     
     // Input handling
+    void PollInput();
     bool IsKeyPressed(int virtualKey);
     bool IsKeyDown(int virtualKey);
     bool IsSpacePressed(); // Special handling for space key

@@ -1,5 +1,41 @@
 #pragma once
+#ifdef _WIN32
 #include <windows.h>
+#else
+using SHORT = short;
+using WORD = unsigned short;
+
+struct COORD {
+    SHORT X;
+    SHORT Y;
+};
+
+struct SMALL_RECT {
+    SHORT Left;
+    SHORT Top;
+    SHORT Right;
+    SHORT Bottom;
+};
+
+struct CHAR_INFO {
+    struct {
+        char AsciiChar;
+    } Char;
+    WORD Attributes;
+};
+
+constexpr int VK_LBUTTON = 0x01;
+constexpr int VK_RBUTTON = 0x02;
+constexpr int VK_RETURN = 0x0D;
+constexpr int VK_ESCAPE = 0x1B;
+constexpr int VK_SPACE = 0x20;
+constexpr int VK_LEFT = 0x25;
+constexpr int VK_UP = 0x26;
+constexpr int VK_RIGHT = 0x27;
+constexpr int VK_DOWN = 0x28;
+#endif
+
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <cmath>

@@ -1,1 +1,4 @@
 *.exe
+*.o
+gunny
+test_input

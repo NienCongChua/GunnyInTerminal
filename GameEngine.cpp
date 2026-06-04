@@ -117,6 +117,7 @@ bool GameEngine::Initialize() {
 void GameEngine::Run() {
     while (gameRunning) {
         console->LimitFPS(kTargetFps);
+        console->PollInput();
         float deltaTime = std::min(console->GetDeltaTime(), kMaxDeltaTime);
 
         HandleInput();
@@ -982,29 +983,15 @@ void GameEngine::DrawMiniMap() {
 }
 
 bool GameEngine::IsKeyJustPressed(int key) {
-    static bool previousStates[256] = {};
-    if (key < 0 || key >= 256) return false;
-
-    bool isDown = (GetAsyncKeyState(key) & 0x8000) != 0;
-    bool justPressed = isDown && !previousStates[key];
-    previousStates[key] = isDown;
-    return justPressed;
+    return console && console->IsKeyPressed(key);
 }
 
 void GameEngine::UpdateMouseInput() {
     if (!console) return;
 
     mousePosition = console->GetMousePosition();
-
-    static bool previousLeft = false;
-    static bool previousRight = false;
-    bool leftDown = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
-    bool rightDown = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0;
-
-    leftMousePressed = leftDown && !previousLeft;
-    rightMousePressed = rightDown && !previousRight;
-    previousLeft = leftDown;
-    previousRight = rightDown;
+    leftMousePressed = console->IsMouseButtonPressed(0);
+    rightMousePressed = console->IsMouseButtonPressed(1);
 }
 
 float GameEngine::CalculateDamage(Point2D explosionCenter, Point2D targetPos, float explosionRadius) const {
